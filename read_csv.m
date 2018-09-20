@@ -6,9 +6,9 @@ format long;
 % filename = '2018-08-23-15-11-44-skeleton_tracking-body_parts_topic.csv';
 filename = '2018-08-23-15-24-00-skeleton_tracking-body_parts_topic.csv';
 
-% targetNames = table(['Lfoot', 'Lleg', 'Lknee', 'Lthigh', 'Rfoot', 'Rleg', 'Rknee', 'Rthigh', 'Rhips'...
-%     'Lhips', 'Neck', 'Rarm', 'Relbow', 'Rforearm', 'Rhand', 'Larm', 'Lelbow', 'Lforearm', 'Lhand'...
-%     'FaceLB', 'FaceRB', 'FaceLT', 'FaceRT', 'Rchest', 'Lchest', 'Lshoulder', 'Rshoulder'])
+% possible targetNames: 'Lfoot', 'Lleg', 'Lknee', 'Lthigh', 'Rfoot', 'Rleg', 'Rknee', 'Rthigh', 'Rhips',
+%     'Lhips', 'Neck', 'Rarm', 'Relbow', 'Rforearm', 'Rhand', 'Larm', 'Lelbow', 'Lforearm', 'Lhand', 
+%     'FaceLB', 'FaceRB', 'FaceLT', 'FaceRT', 'Rchest', 'Lchest', 'Lshoulder', 'Rshoulder'
 % targetNames = {'Lfoot'; 'Lleg'};
 targetNames = {'FaceLB'; 'FaceRB'; 'FaceLT'; 'FaceRT'; 'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder'};
 
@@ -103,8 +103,3 @@ legend(result.Properties.VariableNames(:,2:size(result.Properties.VariableNames,
 title('z')
 datetick('x');
 xtickformat('hh:mm:ss.SSSSSS');
-
-
-
-
-
