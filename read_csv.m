@@ -4,13 +4,18 @@ close all;
 format long;
 
 % filename = '2018-08-23-15-11-44-skeleton_tracking-body_parts_topic.csv';
-filename = '2018-08-23-15-24-00-skeleton_tracking-body_parts_topic.csv';
+% filename = '2018-08-23-15-24-00-skeleton_tracking-body_parts_topic.csv';
+filename = '2018-08-23-15-13-43-skeleton_tracking-body_parts_topic.csv';
+% filename = '2018-08-23-15-29-03-skeleton_tracking-body_parts_topic.csv';
 
 % possible targetNames: 'Lfoot', 'Lleg', 'Lknee', 'Lthigh', 'Rfoot', 'Rleg', 'Rknee', 'Rthigh', 'Rhips',
 %     'Lhips', 'Neck', 'Rarm', 'Relbow', 'Rforearm', 'Rhand', 'Larm', 'Lelbow', 'Lforearm', 'Lhand', 
 %     'FaceLB', 'FaceRB', 'FaceLT', 'FaceRT', 'Rchest', 'Lchest', 'Lshoulder', 'Rshoulder'
 % targetNames = {'Lfoot'; 'Lleg'};
-targetNames = {'FaceLB'; 'FaceRB'; 'FaceLT'; 'FaceRT'; 'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder'};
+% targetNames = {'FaceLB'; 'FaceRB'; 'FaceLT'; 'FaceRT'; 'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder'};
+targetNames = {'Lfoot'; 'Lleg'; 'Lknee'; 'Lthigh'; 'Rfoot'; 'Rleg'; 'Rknee'; 'Rthigh'; 'Rhips';
+    'Lhips'; 'Neck'; 'Rarm'; 'Relbow'; 'Rforearm'; 'Rhand'; 'Larm'; 'Lelbow'; 'Lforearm'; 'Lhand'; 
+    'FaceLB'; 'FaceRB'; 'FaceLT'; 'FaceRT'; 'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder'};
 
 data = readtable(filename,'Delimiter', ',');
 
@@ -68,13 +73,25 @@ xticks('auto');
 hold on
 for i = 1:size(targetNames,1)   
     toPlot = result{:,i+1};
-    plot(result.Time,toPlot(:,1),'o-') 
+    plot(result.Time,toPlot(:,1),'o-')
 end
 hold off
 legend(result.Properties.VariableNames(:,2:size(result.Properties.VariableNames,2)))
 title('x')
 datetick('x');
-xtickformat('hh:mm:ss.SSSSSS');
+xtickformat('HH:mm:ss.SSS');
+xlim([result.Time(1) result.Time(size(result.Time,1))]);
+
+% ind = linspace(1,length(result.Time),10);
+% ind = round(linspace(1,length(result.Time),10));
+% d(10) = datetime;
+% for i = 1:10
+%     d(i) = result.Time(ind(i));
+% end
+timeDiff = 0.1 * (result.Time(size(result.Time,1)) - result.Time(1));
+d = result.Time(1):timeDiff:result.Time(size(result.Time,1));
+xticks(d);
+
 % xticks('manual');
 % xticks([result.Time(1), result.Time(size(result.Time,1) / 2), result.Time(size(result.Time,1))]);
 % xticklabels({result.Time(1), result.Time(size(result.Time,1) / 2), result.Time(size(result.Time,1))});
@@ -87,10 +104,12 @@ for i = 1:size(targetNames,1)
     plot(result.Time,toPlot(:,2),'o-') 
 end
 hold off
-legend(result.Properties.VariableNames(:,2:size(result.Properties.VariableNames,2)))
+% legend(result.Properties.VariableNames(:,2:size(result.Properties.VariableNames,2)))
 title('y')
 datetick('x');
-xtickformat('hh:mm:ss.SSSSSS');
+xtickformat('HH:mm:ss.SSS');
+xlim([result.Time(1) result.Time(size(result.Time,1))]);
+xticks(d);
 
 subplot(3,1,3);
 hold on
@@ -99,7 +118,9 @@ for i = 1:size(targetNames,1)
     plot(result.Time,toPlot(:,3),'o-') 
 end
 hold off
-legend(result.Properties.VariableNames(:,2:size(result.Properties.VariableNames,2)))
+% legend(result.Properties.VariableNames(:,2:size(result.Properties.VariableNames,2)))
 title('z')
 datetick('x');
-xtickformat('hh:mm:ss.SSSSSS');
+xtickformat('HH:mm:ss.SSS');
+xlim([result.Time(1) result.Time(size(result.Time,1))]);
+xticks(d);
