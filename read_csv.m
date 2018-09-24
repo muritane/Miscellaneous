@@ -3,19 +3,41 @@ clc;
 close all;
 format long;
 
+% bewegung-40 (Versuchsnr: 38,39,40)
+filename = '2018-08-23-15-58-42-skeleton_tracking-body_parts_topic.csv';
+% filename = '2018-08-23-16-01-04-skeleton_tracking-body_parts_topic.csv';
+% filename = '2018-08-23-16-03-41-skeleton_tracking-body_parts_topic.csv';
+% bewegung (Versuchsnr: 35,36,37)
+% filename = '2018-08-23-15-42-48-skeleton_tracking-body_parts_topic.csv';
+% filename = '2018-08-23-15-46-28-skeleton_tracking-body_parts_topic.csv';
+% filename = '2018-08-23-15-49-22-skeleton_tracking-body_parts_topic.csv';
+% full-body-static (Versuchsnr: 30,31,32)
 % filename = '2018-08-23-15-11-44-skeleton_tracking-body_parts_topic.csv';
-% filename = '2018-08-23-15-24-00-skeleton_tracking-body_parts_topic.csv';
-filename = '2018-08-23-15-13-43-skeleton_tracking-body_parts_topic.csv';
+% filename = '2018-08-23-15-13-43-skeleton_tracking-body_parts_topic.csv';
+% filename = '2018-08-23-15-16-40-skeleton_tracking-body_parts_topic.csv';
+% full-body-dynamic (Versuchsnr: 33,34)
 % filename = '2018-08-23-15-29-03-skeleton_tracking-body_parts_topic.csv';
+% filename = '2018-08-23-15-24-00-skeleton_tracking-body_parts_topic.csv';
+
+% outputFileName = '38_2018-08-23-15-58-42_bewegung-40.csv';
 
 % possible targetNames: 'Lfoot', 'Lleg', 'Lknee', 'Lthigh', 'Rfoot', 'Rleg', 'Rknee', 'Rthigh', 'Rhips',
 %     'Lhips', 'Neck', 'Rarm', 'Relbow', 'Rforearm', 'Rhand', 'Larm', 'Lelbow', 'Lforearm', 'Lhand', 
 %     'FaceLB', 'FaceRB', 'FaceLT', 'FaceRT', 'Rchest', 'Lchest', 'Lshoulder', 'Rshoulder'
-% targetNames = {'Lfoot'; 'Lleg'};
-% targetNames = {'FaceLB'; 'FaceRB'; 'FaceLT'; 'FaceRT'; 'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder'};
-targetNames = {'Lfoot'; 'Lleg'; 'Lknee'; 'Lthigh'; 'Rfoot'; 'Rleg'; 'Rknee'; 'Rthigh'; 'Rhips';
-    'Lhips'; 'Neck'; 'Rarm'; 'Relbow'; 'Rforearm'; 'Rhand'; 'Larm'; 'Lelbow'; 'Lforearm'; 'Lhand'; 
-    'FaceLB'; 'FaceRB'; 'FaceLT'; 'FaceRT'; 'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder'};
+
+% bewegung 40 (kein Kopf, keine Hände, keine Beine, kein Hals - Torso, Oberarme, Unterarme)
+targetNames = {'Rarm'; 'Relbow'; 'Rforearm'; 'Larm'; 'Lelbow'; 'Lforearm'; 
+               'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder';
+               'Neck'; 'Lhips'; 'Rhips'};
+% bewegung (Keine obere Kopfhälfte, keine Knien und Füße - Untere Kopfhälfte, Hals, Torso, Arme, Hüfte)
+% targetNames = {'Lthigh'; 'Rthigh'; 'Rhips'; 'Lhips'; 'Neck'; 
+%                'Rarm'; 'Relbow'; 'Rforearm'; 'Rhand'; 'Larm'; 'Lelbow'; 'Lforearm'; 'Lhand'; 
+%                'FaceLB'; 'FaceRB'; 'FaceLT'; 'FaceRT'; 'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder'};
+% full body static & dynamic
+% targetNames = {'Lfoot'; 'Lleg'; 'Lknee'; 'Lthigh'; 'Rfoot'; 'Rleg'; 'Rknee'; 'Rthigh'; 'Rhips';
+%     'Lhips'; 'Neck'; 'Rarm'; 'Relbow'; 'Rforearm'; 'Rhand'; 'Larm'; 'Lelbow'; 'Lforearm'; 'Lhand'; 
+%     'FaceLB'; 'FaceRB'; 'FaceLT'; 'FaceRT'; 'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder'};
+
 
 data = readtable(filename,'Delimiter', ',');
 
@@ -124,3 +146,6 @@ datetick('x');
 xtickformat('HH:mm:ss.SSS');
 xlim([result.Time(1) result.Time(size(result.Time,1))]);
 xticks(d);
+
+% save(outputFileName, 'result');
+% writetable(result,outputFileName,'Delimiter',',','WriteRowNames',true);
