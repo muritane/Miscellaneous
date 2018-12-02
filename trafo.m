@@ -135,10 +135,35 @@ filenames_results = { '38_2018-08-23-15-58-42_bewegung-40.mat';
                     '31_2018-08-23-15-13-43_full-body-static.mat';
                     '32_2018-08-23-15-16-40_full-body-static.mat';
                     '33_2018-08-23-15-29-03_full-body-dynamic.mat';
-                    '34_2018-08-23-15-24-00_full-body-dynamic.mat'};                          
-             
+                    '34_2018-08-23-15-24-00_full-body-dynamic.mat'};         
+                
+tick_label_offset = [0.082, 0.000006, 0.18, 0.000006, 0.18, 0.000006;
+                     0.68, 0.000006, 0.9, 0.000006, 0.18, 0.000006;
+                     0.68, 0.000006, 0.9, 0.000006, 0.8, 0.000006;
+                     0.15, 0.000005, 0.18, 0.000005, 0.3, 0.000005;
+                     0.07, 0.0000047, 0.18, 0.0000047, 0.3, 0.0000047;
+                     0.15, 0.0000076, 0.31, 0.0000076, 0.01, 0.0000076;
+                     0.8, 0.0000024, 0.25, 0.0000024, 0.2, 0.0000024;
+                     0.4, 0.0000027, 0.53, 0.0000027, 0.27, 0.0000027;
+                     0.95, 0.000002, 0.7, 0.000002, 0.4, 0.000002;
+                     0.85, 0.000004, 0.4, 0.000004, 0.2, 0.000004;
+                     1.45, 0.0000065, 0.7, 0.0000065, 0.45, 0.0000065]; 
+                 
+tick_label_offset_world = [1.6, 0.000006, 0.3, 0.000006, 0.27, 0.000006;
+                     1.6, 0.000006, 0.37, 0.000006, 0.27, 0.000006;
+                     3.0, 0.000006, 0.37, 0.000006, 0.9, 0.000006;
+                     1.5, 0.000005, 0.3, 0.000005, 0.33, 0.000005;
+                     1.5, 0.0000047, 0.3, 0.0000047, 0.1, 0.0000047;
+                     1.5, 0.0000076, 0.35, 0.0000076, 0.34, 0.0000076;
+                     0.85, 0.0000024, 0.3, 0.0000024, 0.2, 0.0000024;
+                     0.35, 0.0000027, 0.53, 0.0000027, 0.8, 0.0000027;
+                     1.45, 0.000002, 0.6, 0.000002, 0.32, 0.000002;
+                     0.9, 0.000004, 0.9, 0.000004, 0.2, 0.000004;
+                     1.5, 0.0000065, 0.7, 0.0000065, 0.9, 0.0000065];          
+                 
+                 
 % for global_i = 1 : size(targetNamesAll, 1)
-global_i = 1;
+global_i = 11;
 
 loadCameraCS = strcat('D:\Google drive\HiWi\KIT_cameraCS_250Hz\', loadCameraCSs{global_i,1});    
 filename_result = strcat('D:\Google drive\HiWi\New\', filenames_results{global_i,1});
@@ -181,12 +206,12 @@ end
 % [x_new, y_new, z_new, 1] = Trafo * [x_old, y_old, z_old, 1]
 transformed_body_parts = result;
 
-% for i = 1:size(result,1)
-%     for j = 2:size(result,2)
-%         temp = trafos(:,:,i)*[transpose(result{i,j});1];
-%         transformed_body_parts{i,j} = transpose(temp(1:3));
-%     end
-% end
+for i = 1:size(result,1)
+    for j = 2:size(result,2)
+        temp = trafos(:,:,i)*[transpose(result{i,j});1];
+        transformed_body_parts{i,j} = transpose(temp(1:3));
+    end
+end
 
 
 % ------------------------------------------------------------------------------
@@ -194,18 +219,20 @@ transformed_body_parts = result;
 % ------------------------------------------------------------------------------
 
 targetNames = targetNamesAll{global_i,1};
-% outputFileName_fig = outputFileNames_fig_world{global_i,1};
+outputFileName_fig = outputFileNames_fig_world{global_i,1};
 % outputFileName_png = outputFileNames_png_world{global_i,1}; 
-% outputFileName_mat = outputFileNames_mat_world{global_i,1};
-% outputFileName_csv = outputFileNames_csv_world{global_i,1};
+outputFileName_mat = outputFileNames_mat_world{global_i,1};
+outputFileName_csv = outputFileNames_csv_world{global_i,1};
 
-outputFileName_fig = outputFileNames_fig{global_i,1};
-outputFileName_png = outputFileNames_png{global_i,1};
+% outputFileName_fig = outputFileNames_fig{global_i,1};
+% outputFileName_png = outputFileNames_png{global_i,1};
 
+timeDiff = transformed_body_parts.Time(size(transformed_body_parts.Time,1)) - transformed_body_parts.Time(1);
+timeIncr = 0.1 * timeDiff;
+timeTicks = transformed_body_parts.Time(1):timeIncr:transformed_body_parts.Time(size(transformed_body_parts.Time,1));
 
 fig = figure;
 subplot(3,1,1);
-% xticks('auto');
 hold on
 for i = 1:size(targetNames,1)   
     toPlot = transformed_body_parts{:,i+1};
@@ -216,27 +243,15 @@ hold off
 legend(transformed_body_parts.Properties.VariableNames(:,2:size(transformed_body_parts.Properties.VariableNames,2)));
 
 title('x');
-% datetick('x');
-% xtickformat('HH:mm:ss.SSS');
 xlim([transformed_body_parts.Time(1) transformed_body_parts.Time(size(transformed_body_parts.Time,1))]);
-
-
-timeDiff = transformed_body_parts.Time(size(transformed_body_parts.Time,1)) - transformed_body_parts.Time(1);
-timeIncr = 0.1 * timeDiff;
-start_time = datetime('2018/08/23/00:00:00.000000','Format',...
-        'yyyy/MM/dd/HH:mm:ss.SSSSSS');
-timeTicks = transformed_body_parts.Time(1):timeIncr:transformed_body_parts.Time(size(transformed_body_parts.Time,1));
-% timeTicks = start_time:timeIncr:(start_time + timeDiff);
-% xticks(timeTicks);
 set(gca,'XTick',timeTicks)
-
-
 set(gca, 'xticklabel', [])
 yTicks = get(gca,'ytick');
 xTicks = get(gca, 'xtick');
 minY = min(yTicks);
-VerticalOffset = 0.077;
-HorizontalOffset = 0.0000058;
+VerticalOffset = tick_label_offset_world(global_i, 1);
+HorizontalOffset = tick_label_offset_world(global_i, 2);
+fprintf('x: %s, %f\n', datestr(xTicks(1) - HorizontalOffset,'HH:MM:SS.FFF'), minY - VerticalOffset);
 for xx = 1:length(xTicks)
     text(xTicks(xx) - HorizontalOffset, minY - VerticalOffset,...
         ['$$\begin{array}{c}',datestr(xTicks(xx),'HH:MM:SS.FFF'),'\\',...
@@ -252,12 +267,22 @@ for i = 1:size(targetNames,1)
     plot(transformed_body_parts.Time,toPlot(:,2),'o-') 
 end
 hold off
-% legend(transformed_body_parts.Properties.VariableNames(:,2:size(transformed_body_parts.Properties.VariableNames,2)))
+
 title('y')
-datetick('x');
-xtickformat('HH:mm:ss.SSS');
 xlim([transformed_body_parts.Time(1) transformed_body_parts.Time(size(transformed_body_parts.Time,1))]);
-xticks(timeTicks);
+set(gca,'XTick',timeTicks)
+set(gca, 'xticklabel', [])
+yTicks = get(gca,'ytick');
+xTicks = get(gca, 'xtick');
+minY = min(yTicks);
+VerticalOffset = tick_label_offset_world(global_i, 3);
+HorizontalOffset = tick_label_offset_world(global_i, 4);
+fprintf('y: %s, %f\n', datestr(xTicks(1) - HorizontalOffset,'HH:MM:SS.FFF'), minY - VerticalOffset);
+for xx = 1:length(xTicks)
+    text(xTicks(xx) - HorizontalOffset, minY - VerticalOffset,...
+        ['$$\begin{array}{c}',datestr(xTicks(xx),'HH:MM:SS.FFF'),'\\',...
+        datestr(xTicks(xx)-xTicks(1),'HH:MM:SS.FFF'),'\end{array}$$'], 'Interpreter', 'latex');
+end
 
 subplot(3,1,3);
 hold on
@@ -268,22 +293,19 @@ end
 hold off
 
 title('z')
-datetick('x');
-xtickformat('HH:mm:ss.SSS');
-
 xlim([transformed_body_parts.Time(1) transformed_body_parts.Time(size(transformed_body_parts.Time,1))]);
-xticks(timeTicks);
-
-get(gca, 'xtick');
-% set(gca, 'xticklabel', []) %Remove tick labels
+set(gca,'XTick',timeTicks)
+set(gca, 'xticklabel', [])
 yTicks = get(gca,'ytick');
 xTicks = get(gca, 'xtick');
-minX = min(xTicks);
 minY = min(yTicks);
-VerticalOffset = 0.0001;
-HorizontalOffset = 0.0000001;
+VerticalOffset = tick_label_offset_world(global_i, 5);
+HorizontalOffset = tick_label_offset_world(global_i, 6);
+fprintf('z: %s, %f\n', datestr(xTicks(1) - HorizontalOffset,'HH:MM:SS.FFF'), minY - VerticalOffset);
 for xx = 1:length(xTicks)
-    text(minX-HorizontalOffset, minY-VerticalOffset, ['$$\begin{array}{c}', datestr(xTicks(xx),'HH:MM:SS.FFF'),'\\', num2str(2.),'\end{array}$$'], 'Interpreter', 'latex')
+    text(xTicks(xx) - HorizontalOffset, minY - VerticalOffset,...
+        ['$$\begin{array}{c}',datestr(xTicks(xx),'HH:MM:SS.FFF'),'\\',...
+        datestr(xTicks(xx)-xTicks(1),'HH:MM:SS.FFF'),'\end{array}$$'], 'Interpreter', 'latex');
 end
 
 
@@ -292,21 +314,30 @@ end
 
 
 
-% outputFileNameFIG = strcat('D:\Google drive\HiWi\world\', outputFileName_fig);
+outputFileNameFIG = strcat('D:\Google drive\HiWi\world\', outputFileName_fig);
 % outputFileNamePNG = strcat('D:\Google drive\HiWi\world\', outputFileName_png);
-% outputFileNameMAT = strcat('D:\Google drive\HiWi\world\', outputFileName_mat);
-% outputFileNameCSV = strcat('D:\Google drive\HiWi\world\', outputFileName_csv);
+outputFileNameMAT = strcat('D:\Google drive\HiWi\world\', outputFileName_mat);
+outputFileNameCSV = strcat('D:\Google drive\HiWi\world\', outputFileName_csv);
 
 
-outputFileNameFIG = strcat('D:\Google drive\HiWi\2lines\', outputFileName_fig);
-outputFileNamePNG = strcat('D:\Google drive\HiWi\2lines\', outputFileName_png);
+% outputFileNameFIG = strcat('D:\Google drive\HiWi\2lines\', outputFileName_fig);
+% outputFileNamePNG = strcat('D:\Google drive\HiWi\2lines\', outputFileName_png);
 
 savefig(fig,outputFileNameFIG)
 % print(outputFileNamePNG,'-dpng','-r0') % bad legend location
 % close(fig)
 
-% end
+writetable(transformed_body_parts,outputFileNameCSV,'Delimiter',',','WriteRowNames',true);
+fromcsv = readtable(outputFileNameCSV,'Delimiter', ',');
+%     stringNames = fromcsv.Properties.VariableNames;
+for i = 2 : size(fromcsv.Properties.VariableNames, 2)
+    fromcsv.Properties.VariableNames{i} = replace(fromcsv.Properties.VariableNames{i}, '1', 'x');
+    fromcsv.Properties.VariableNames{i} = replace(fromcsv.Properties.VariableNames{i}, '2', 'y');
+    fromcsv.Properties.VariableNames{i} = replace(fromcsv.Properties.VariableNames{i}, '3', 'z');
+end
+writetable(fromcsv,outputFileNameCSV,'Delimiter',',','WriteRowNames',true);
 
-%     outputFileName2 = strcat('D:\Google drive\HiWi\New\csv', outputFileName);
-%     save('D:\Google drive\HiWi\Time-250Hz','transformed_body_parts');
-%     save(outputFileName2, 'transformed_body_parts');
+save(outputFileNameMAT, 'transformed_body_parts');
+
+
+% end
