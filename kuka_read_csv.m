@@ -50,19 +50,20 @@ targetNames3 = {'Lfoot'; 'Lleg'; 'Lknee'; 'Lthigh'; 'Rfoot'; 'Rleg'; 'Rknee'; 'R
     'Lhips'; 'Neck'; 'Rarm'; 'Relbow'; 'Rforearm'; 'Rhand'; 'Larm'; 'Lelbow'; 'Lforearm'; 'Lhand'; 
     'FaceLB'; 'FaceRB'; 'FaceLT'; 'FaceRT'; 'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder'};
 
-targetNames4 = {'Lfoot'; 'Lleg'; 'Lknee'; 'Lthigh'; 'Rfoot'; 'Rleg'; 'Rknee'; 'Rthigh'; 'Rhips';
-    'Lhips'; 'Neck'; 'Rarm'; 'Relbow'; 'Rforearm'; 'Rhand'; 'Larm'; 'Lelbow'; 'Lforearm'; 'Lhand'; 
-    'FaceLB'; 'FaceRB'; 'FaceLT'; 'FaceRT'; 'Rchest'; 'Lchest'; 'Lshoulder'; 'Rshoulder'};
+targetNames4 = {'Point1'; 'Point2'; 'Point3'; 'Point4'; 'Point5'; 'Point6'; 'Point7'; 
+            'Point8'; 'Point9'; 'Point10'; 'Point11'; 'Point12'; 'Point13'; 'Point14'; 
+            'Point15'; 'Point16'; 'Point17'; 'Point18'; 'Point19'; 'Point20'; 'Point21'; 
+            'Point22'; 'Point23'; 'Point24'; 'Point25'; };
 
 
 %targetNamesAll = { targetNames1; targetNames1; targetNames1; 
 %                   targetNames2; targetNames2; targetNames2; 
 %                   targetNames3; targetNames3; targetNames3; 
 %                   targetNames3; targetNames3};
-targetNamesAll = { targetNames1; targetNames1; targetNames1; 
-                   targetNames2; targetNames2; targetNames2; 
-                   targetNames3; targetNames3; targetNames3; 
-                   targetNames3; targetNames3};
+targetNamesAll = { targetNames4; targetNames4; targetNames4; 
+                   targetNames4; targetNames4; targetNames4; 
+                   targetNames4; targetNames4; targetNames4; 
+                   targetNames4; targetNames4};
 
 
 outputFileNames = { '38_2018-08-23-15-58-42_bewegung-40.csv';
@@ -77,11 +78,12 @@ outputFileNames = { '38_2018-08-23-15-58-42_bewegung-40.csv';
                     '33_2018-08-23-15-29-03_full-body-dynamic.csv';
                     '34_2018-08-23-15-24-00_full-body-dynamic.csv'};
 % for i = 1 : size(targetNamesAll, 1)
-    i = 11;
+    i = 1; % [1,11]
     targetNames = targetNamesAll{i,1};
     outputFileName = outputFileNames{i,1};
-    data = readtable(filenames{i,1},'Delimiter', ',');
-    % data = readtable(filename,'Delimiter', ',');
+    data = readtable(filenames{i,1},'Delimiter', ',')
+    
+    
 
     tableTime = table([],'VariableNames',{'Time'});
     for i = 1:size(data,1)
@@ -146,20 +148,9 @@ outputFileNames = { '38_2018-08-23-15-58-42_bewegung-40.csv';
     xtickformat('HH:mm:ss.SSS');
     xlim([result.Time(1) result.Time(size(result.Time,1))]);
 
-    % ind = linspace(1,length(result.Time),10);
-    % ind = round(linspace(1,length(result.Time),10));
-    % d(10) = datetime;
-    % for i = 1:10
-    %     d(i) = result.Time(ind(i));
-    % end
     timeDiff = 0.1 * (result.Time(size(result.Time,1)) - result.Time(1));
     d = result.Time(1):timeDiff:result.Time(size(result.Time,1));
     xticks(d);
-
-    % xticks('manual');
-    % xticks([result.Time(1), result.Time(size(result.Time,1) / 2), result.Time(size(result.Time,1))]);
-    % xticklabels({result.Time(1), result.Time(size(result.Time,1) / 2), result.Time(size(result.Time,1))});
-
 
     subplot(3,1,2);
     hold on
@@ -168,43 +159,35 @@ outputFileNames = { '38_2018-08-23-15-58-42_bewegung-40.csv';
         plot(result.Time,toPlot(:,2),'o-') 
     end
     hold off
-    % legend(result.Properties.VariableNames(:,2:size(result.Properties.VariableNames,2)))
     title('y')
     datetick('x');
     xtickformat('HH:mm:ss.SSS');
     xlim([result.Time(1) result.Time(size(result.Time,1))]);
     xticks(d);
+    
+%    subplot(3,1,3);
+%    hold on
+%    for i = 1:size(targetNames,1)   
+%        toPlot = result{:,i+1};
+%        plot(result.Time,toPlot(:,3),'o-') 
+%    end
+%    hold off
+%    title('z')
+%    datetick('x');
+%    xtickformat('HH:mm:ss.SSS');
+%    xlim([result.Time(1) result.Time(size(result.Time,1))]);
+%    xticks(d);
 
-    subplot(3,1,3);
-    hold on
-    for i = 1:size(targetNames,1)   
-        toPlot = result{:,i+1};
-        plot(result.Time,toPlot(:,3),'o-') 
-    end
-    hold off
-    % legend(result.Properties.VariableNames(:,2:size(result.Properties.VariableNames,2)))
-    title('z')
-    datetick('x');
-    xtickformat('HH:mm:ss.SSS');
-    xlim([result.Time(1) result.Time(size(result.Time,1))]);
-    xticks(d);
-
-    outputFileName2 = strcat('D:\Google drive\HiWi\New\csv', outputFileName);
+%    outputFileName2 = strcat('D:\Google drive\HiWi\New\csv', outputFileName);
 %     save('D:\Google drive\HiWi\New','result');
 %     save(outputFileName2, 'result');
 
 
-    writetable(result,outputFileName,'Delimiter',',','WriteRowNames',true);
-    fromcsv = readtable(outputFileName,'Delimiter', ',');
-%     stringNames = fromcsv.Properties.VariableNames;
-    for i = 2 : size(fromcsv.Properties.VariableNames, 2)
-        fromcsv.Properties.VariableNames{i} = replace(fromcsv.Properties.VariableNames{i}, '1', 'x');
-        fromcsv.Properties.VariableNames{i} = replace(fromcsv.Properties.VariableNames{i}, '2', 'y');
-        fromcsv.Properties.VariableNames{i} = replace(fromcsv.Properties.VariableNames{i}, '3', 'z');
-    end
-    writetable(fromcsv,outputFileName,'Delimiter',',','WriteRowNames',true);
-%     prompt = 'next? ';
-%     pause = input(prompt)
-%     pause2 = pause * 10
- 
-% end
+%    writetable(result,outputFileName,'Delimiter',',','WriteRowNames',true);
+%    fromcsv = readtable(outputFileName,'Delimiter', ',');
+%    for i = 2 : size(fromcsv.Properties.VariableNames, 2)
+%        fromcsv.Properties.VariableNames{i} = replace(fromcsv.Properties.VariableNames{i}, '1', 'x');
+%        fromcsv.Properties.VariableNames{i} = replace(fromcsv.Properties.VariableNames{i}, '2', 'y');
+%        fromcsv.Properties.VariableNames{i} = replace(fromcsv.Properties.VariableNames{i}, '3', 'z');
+%    end
+%    writetable(fromcsv,outputFileName,'Delimiter',',','WriteRowNames',true);
