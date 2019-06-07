@@ -78,10 +78,10 @@ outputFileNames = { '38_2018-08-23-15-58-42_bewegung-40.csv';
                     '33_2018-08-23-15-29-03_full-body-dynamic.csv';
                     '34_2018-08-23-15-24-00_full-body-dynamic.csv'};
 % for i = 1 : size(targetNamesAll, 1)
-    i = 1; % [1,11]
+    i = 5; % [1,11]
     targetNames = targetNamesAll{i,1};
     outputFileName = outputFileNames{i,1};
-    data = readtable(filenames{i,1},'Delimiter', ',')
+    data = readtable(filenames{i,1},'Delimiter', ',');
     
     
 
@@ -90,22 +90,22 @@ outputFileNames = { '38_2018-08-23-15-58-42_bewegung-40.csv';
         time = table(datetime(data.time(i),'Format','yyyy/MM/dd/HH:mm:ss.SSSSSS'),'VariableNames',{'Time'});
         tableTime = [tableTime;time];
     end
-
-    % names are the same, so any value from data(:,2) is okay
-    tableNames = table(split(regexprep(char(data{1,2}), '[^a-zA-Z,]', ''), ','));
-
-    allPositions = data{:,3};
-
-    mustcalc = zeros(1,size(tableNames,1));
-    for i = 1:size(tableNames,1)
-        for j = 1:size(targetNames,1)
-            if strcmp(char(tableNames{i,1}), char(targetNames(j))) == 1
-                mustcalc(i) = 1;
-                break;
-            end
-        end
-    end
-
+% 
+%     % names are the same, so any value from data(:,2) is okay
+%     tableNames = table(split(regexprep(char(data{1,2}), '[^a-zA-Z,]', ''), ','));
+% 
+    allPositions = data{:,6};
+% 
+%     mustcalc = zeros(1,size(tableNames,1));
+%     for i = 1:size(tableNames,1)
+%         for j = 1:size(targetNames,1)
+%             if strcmp(char(tableNames{i,1}), char(targetNames(j))) == 1
+%                 mustcalc(i) = 1;
+%                 break;
+%             end
+%         end
+%     end
+% 
     allPositionsString = '';
     for i = 1:size(allPositions,1)
         allPositionsString = strcat(allPositionsString,char(allPositions{i,1}));
@@ -113,21 +113,28 @@ outputFileNames = { '38_2018-08-23-15-58-42_bewegung-40.csv';
             allPositionsString = strcat(allPositionsString,',');
         end
     end
-    allPositionsString = regexprep(allPositionsString, '[^0-9.-,]', '');
-    allPositionsDoubleArray = str2double(split(allPositionsString, ','));
+    allPositionsString = regexprep(allPositionsString,'[\n]','');
+    allPositionsString = strrep(allPositionsString,'x:','');
+    allPositionsString = strrep(allPositionsString,'y:',' ');
+    allPositionsString = strrep(allPositionsString,'z:',' ');
+    allPositionsDoubleArray = str2num(allPositionsString);
+    
+%     allPositionsString = regexprep(allPositionsString, '[^0-9.-,]', '');
+%     allPositionsDoubleArray = str2double(split(allPositionsString, ','));
+
     result = tableTime;
-    for i = 1:size(tableNames,1)
-       if not(mustcalc(i))
-           continue;
-       end
-       temp = table([],'VariableNames',{char(tableNames{i,1})});
+    for i = 1:size(targetNames,1)
+%        if not(mustcalc(i))
+%            continue;
+%        end
+       temp = table([],'VariableNames',{char(targetNames{i,1})});
        for j = 1:size(tableTime,1)
-           index = 1+(i-1)*3+(j-1)*3*size(tableNames,1); % 3:xyz and 27:size(tableNames,1)
-           if allPositionsDoubleArray(index,1) == 20000.0
-               temp = [temp;table([NaN NaN NaN],'VariableNames',{char(tableNames{i,1})})];
+           index = 1+(i-1)*3+(j-1)*3*size(targetNames,1); % 3:xyz and 25:size(tableNames,1)
+           if isnan(allPositionsDoubleArray(1,index))
+               temp = [temp;table([NaN NaN NaN],'VariableNames',{char(targetNames{i,1})})];
            else
-               temp = [temp;table([allPositionsDoubleArray(index,1) allPositionsDoubleArray(index+1,1) allPositionsDoubleArray(index+2,1)]...
-                   ,'VariableNames',{char(tableNames{i,1})})];
+               temp = [temp;table([allPositionsDoubleArray(1,index) allPositionsDoubleArray(1,index+1) allPositionsDoubleArray(1,index+2)]...
+                   ,'VariableNames',{char(targetNames{i,1})})];
            end
        end
        result = [result temp];
@@ -165,18 +172,18 @@ outputFileNames = { '38_2018-08-23-15-58-42_bewegung-40.csv';
     xlim([result.Time(1) result.Time(size(result.Time,1))]);
     xticks(d);
     
-%    subplot(3,1,3);
-%    hold on
-%    for i = 1:size(targetNames,1)   
-%        toPlot = result{:,i+1};
-%        plot(result.Time,toPlot(:,3),'o-') 
-%    end
-%    hold off
-%    title('z')
-%    datetick('x');
-%    xtickformat('HH:mm:ss.SSS');
-%    xlim([result.Time(1) result.Time(size(result.Time,1))]);
-%    xticks(d);
+   subplot(3,1,3);
+   hold on
+   for i = 1:size(targetNames,1)   
+       toPlot = result{:,i+1};
+       plot(result.Time,toPlot(:,3),'o-') 
+   end
+   hold off
+   title('z')
+   datetick('x');
+   xtickformat('HH:mm:ss.SSS');
+   xlim([result.Time(1) result.Time(size(result.Time,1))]);
+   xticks(d);
 
 %    outputFileName2 = strcat('D:\Google drive\HiWi\New\csv', outputFileName);
 %     save('D:\Google drive\HiWi\New','result');
